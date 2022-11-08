@@ -1,0 +1,32 @@
+{% extends 'admin/index.html' %}
+<html>
+    <head>
+        <title>Grades</title>
+        <link rel="stylesheet" href="mysheet.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src = functions.js></script>        
+    </head>
+    <body>
+        <script>
+        //allGrades = document.body.innerHTML;
+        document.getElementById("showAll");
+        </script>
+        <label for="Name">Name:</label>
+        <input type="text" id="Name" name="Name" placeholder="Full name here">
+        <label for="Grade">Grade:</label>
+        <input type="text" id="Grade" name="Grade" placeholder="Numerical grade here">
+        <button id = "execute" class = "get"> Get person's grade </button>
+        <button class = "getAll"> Show all grades </button>
+        <button class = "addStudent"> Add student & grade </button>
+        <button class = "editGrade"> Edit student's grade </button>
+        <button class = "deleteGrade"> Delete student's grade </button>
+        <p id = "GradeDisplay"></p>
+        <table id = "gradeTable">
+            <tr>
+                <th>Student name</th>
+                <th> Grade </th>
+            </tr>
+            
+        </table>
+    </body>
+</html>
