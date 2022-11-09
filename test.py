@@ -67,7 +67,7 @@ with app.app_context():
         result = db.session.execute(db.select(Student.name).where(Student.userID == username))
         nameDictionary = [dict(r) for r in result.all()]
         for nameDict in nameDictionary:
-            nameDict["name"]
+            return nameDict["name"]
         return nameDict["name"]
             
     @app.route('/<string:username>/classes', methods = ['GET'])
@@ -97,13 +97,30 @@ with app.app_context():
         editStudent = Student.query.all()
 
         return "0"
-    @app.route('/<string:username>/enroll/<string:classname>', methods = ['PUT'])
-    def editEnrollment(username):
+    @app.route('/enroll', methods = ['PUT'])
+    def editEnrollment():
+        #Send json of user and class name
+        #Load up all the categories we may use and edit
+        
         targetStudent = Student.query.all()
-        classUpdate = Classes.query.all()   
-        updatedEnrollmentNum = Classes.enrolledNum + 1
-        print("enrollment number is: " +updatedEnrollmentNum)
+        classUpdate = Classes.query.all()  
+        updateEnroll = Enrollment.query.all()
+        contents = request.get_json(silent = True)
+        json.loads(contents)
+        targetClassNum = db.session.execute(db.select(Classes.enrolledNum).where(Classes.classID == contents["classname"]))
+        targetClassMax = db.session.execute(db.select(Classes.maxEnrollment).where(Classes.classID == contents["classname"]))
+        #Check if we have space!
+        if(targetClassNum <= targetClassMax):
+            #Perform the logic here
+            #Upon successful checking of space, we can now add the student to the class. This should be done in enrollment, where we have classID, userID, and grade.
+            db.session.add(Enrollment(classID=contents["classname"], userID = contents["username"], grade = 100.0 ))
+            #Now we need to update the enrollmentNum in Classes.
+            #Retrieve the class by using classID as the filter.
+            updatedNum = Classes.query.filter_by(classID = contents["classname"])
+            updatedNum.enrollmentNum = updatedNum.enrollmentNum +1
+            
         db.session.commit()
+        return "check"
         
 
     
