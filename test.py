@@ -98,32 +98,34 @@ with app.app_context():
 
         return "0"
     @app.route('/enroll', methods = ['PUT'])
-    def editEnrollment():
+    def editEnrollment(): #Done, needs to sanitize input.
         #Send json of user and class name
         #Load up all the categories we may use and edit
-        
-        targetStudent = Student.query.all()
-        classUpdate = Classes.query.all()  
-        updateEnroll = Enrollment.query.all()
         contents = request.get_json(silent = True)
-        json.loads(contents)
-        targetClassNum = db.session.execute(db.select(Classes.enrolledNum).where(Classes.classID == contents["classname"]))
-        targetClassMax = db.session.execute(db.select(Classes.maxEnrollment).where(Classes.classID == contents["classname"]))
+        targetStudent = Student.query.all()
+        classUpdate = Classes.query.filter_by(classID = contents["classname"]).first()
+        updateEnroll = Enrollment.query.all()
+        json.loads(contents) #Sanitizer, gives error at the moment. Delete this and you'll remove the error.
+        print(contents)
+        targetClassNum = classUpdate.enrolledNum
+        targetClassMax = classUpdate.maxEnrollment
+        print(str(targetClassMax))
+        print(str(targetClassNum))
         #Check if we have space!
-        if(targetClassNum <= targetClassMax):
+        if(targetClassNum < targetClassMax):
             #Perform the logic here
             #Upon successful checking of space, we can now add the student to the class. This should be done in enrollment, where we have classID, userID, and grade.
-            db.session.add(Enrollment(classID=contents["classname"], userID = contents["username"], grade = 100.0 ))
+            db.session.add(Enrollment(classID= contents["classname"], userID = contents["username"], grade = 100.0 ))
             #Now we need to update the enrollmentNum in Classes.
             #Retrieve the class by using classID as the filter.
-            updatedNum = Classes.query.filter_by(classID = contents["classname"])
-            updatedNum.enrollmentNum = updatedNum.enrollmentNum +1
+            newClassNum = Classes.query.filter_by(classID= contents["classname"]).update(dict(enrolledNum = targetClassNum +1))
+
             
         db.session.commit()
         return "check"
-        
 
     
+
 
 
 

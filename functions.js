@@ -95,5 +95,18 @@ $(document).ready(function(){
             
         };        
     });
+    $(".enrollStudent").click(function(){
+        var username, classname;
+        username = String($('#username').val());
+        classname = String($('#classname').val());
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("PUT", "http://127.0.0.1:5000/enroll");
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        const body = {"username": username ,"classname": classname};
+        xhttp.send(JSON.stringify(body));
+        xhttp.onload = function() {      
+
+        };
+    });
 
 });
